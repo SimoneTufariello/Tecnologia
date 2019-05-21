@@ -38,37 +38,32 @@ app.post('/register', function(req, res) {
         if (err) throw err;
         conn.query('INSERT INTO User(Nome, Cognome, Username, Password, Email, Data) VALUES("' + nome + '","' + cognome + '","' + username + '","' + pass + '","' + email + '","' + data + '")', function(err, result, fields) {
             if (err) throw err;
-            console.log("OK, registrazione effettuata correttamente: " + nome +" "+ pass);
+            console.log("Login corretto");
 
             res.send(true);
         });
     });
 })
 
-app.get('/login', function(req, res) {
+app.post('/login', function(req, res) {
 
-
-    res.send('Ciao');
-   /* var nome = req.body.nome;
-    var cognome = req.body.cognome;
-    var username = req.body.username;
-    var email = req.body.email;
-    var data = req.body.data;
-    var pass = req.body.password;
+    var username = req.query.username;
+    var pass = req.query.password;
 
     var stat; //no
 
-    var con = Connection();
-
-    con.connect(function(err) {
+    conn.connect(function(err) {
         if (err) throw err;
-        con.query('INSERT INTO User(Nome, Cognome, Username, Password, Email, Data) VALUES("' + nome + '","' + cognome + '","' + username + '","' + pass + '","' + email + '","' + data + '")', function(err, result, fields) {
+        conn.query('SELECT * FROM User WHERE Username = "' + username + '" AND Password = "' + pass + '"', function(err, result, fields) {
             if (err) throw err;
-            console.log("OK, registrazione effettuata correttamente: " + nome +" "+ password);
-
-            res.send(true);
+            if (result == '') {
+                res.send(false);
+            } else {
+                console.log("Login corretto");
+                res.send(true)
+            }
         });
-    }); */
+    });
 })
 
 
