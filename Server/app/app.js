@@ -36,8 +36,8 @@ app.post('/register', function(req, res) {
 
     conn.connect(function(err) {
         if (err) throw err;
-        conn.query('INSERT INTO User(Nome, Cognome, Username, Password, Email, Data) VALUES("' + nome + '","' + cognome + '","' + username + '","' + pass + '","' + email + '","' + data + '")', function(err, result, fields) {
-            if (err) throw err;
+        conn.query('INSERT INTO User(Nome, Cognome, Username, Password, Email, Data) VALUES("' + nome + '","' + cognome + '","' + username + '","' + pass + '","' + email + '","' + data + '")', function(err2, result, fields) {
+            if (err2) throw err2;
             console.log("Login corretto");
 
             res.send(true);
