@@ -10,7 +10,15 @@ app.use(cors());
 app.set('views', './views');
 app.set('view engine', 'pug');
 
-app.get('/', function (req, res) {
+app.use(function(req, res, next){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+
+//VISUALIZZARE MONOPATTINI
+app.get('/VisualizzaMonop', function (req, res) {
 
     MongoClient.connect('mongodb+srv://admin:WmfgqPRXyc5vVlLQ@simo-2g6jy.mongodb.net/admin', function(err, db) {
       if (err) {
@@ -26,5 +34,8 @@ app.get('/', function (req, res) {
       });
     });
 
-    res.send({message: 'WebService RESTful'});
+});
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
 });

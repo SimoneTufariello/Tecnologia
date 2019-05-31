@@ -4,11 +4,15 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+//app.use(cookieParser()); //cookie
+
 const cors = require('cors');
+
+var cookieParser = require('cookie-parser');
+
 app.use(cors());
 
 var MongoClient = require('mongodb').MongoClient;
-
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
@@ -32,7 +36,7 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
-
+//REGISTRAZIONE
 app.post('/register', function(req, res) {
 
     var nome = req.query.nome;
@@ -56,7 +60,7 @@ app.post('/register', function(req, res) {
         });
     });
 })
-
+//LOGIN
 app.post('/login', function(req, res) {
 
     var username = req.query.username;
@@ -78,140 +82,17 @@ app.post('/login', function(req, res) {
     });
 })
 
-app.post('/segnalaG', function (req, res) {
 
-    var args = {
-        data: {
-            ID: req.body.idMezzo,
-            desc: req.body.desc
-            },
-        headers: { "Content-Type": "application/json" }
-    };
-    console.log(req.body);
-    console.log(args.data);
-
-
-    client.post("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/Segnala", args, function (data, response) {
-        // data contiene le informazioni recuperate dal server REST
-        // response contiene le informazioni riguardanti il protocollo HTTP
-        console.log(data +response);
-        if (data.n == 1)
-            res.send([{message: 'OK'}]);
-        else
-            res.send([{message: 'KO'}]);
-    });
-
-
-});
-
-
-
-
-app.post('/noleggiaM', function (req, res) {
-    var args = {
-        data: {
-            IdMezzo: parseInt(req.query.idMezzo),
-            },
-        headers: { "Content-Type": "application/json" }
-    };
-    client.post("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/NoleggiaMono", args, function (data, response) {
-        // data contiene le informazioni recuperate dal server REST
-        // response contiene le informazioni riguardanti il protocollo HTTP
-        if (data.n == 1)
-            res.send([{message: 'OK'}]);
-        else
-            res.send([{message: 'KO'}]);
-    });
-});
-
-
-app.post('/BloccaM', function (req, res) {
-    var args = {
-        data: {
-            IdMezzo: parseInt(req.query.idMezzo),
-            },
-        headers: { "Content-Type": "application/json" }
-    };
-    client.post("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/BloccaMono", args, function (data, response) {
-        // data contiene le informazioni recuperate dal server REST
-        // response contiene le informazioni riguardanti il protocollo HTTP
-        if (data.n == 1)
-            res.send([{message: 'OK'}]);
-        else
-            res.send([{message: 'KO'}]);
-    });
-});
-
-
-
-
-
-app.post('/prenotaS', function (req, res) {
-    var args = {
-        data: {
-            Data: req.body.Data,
-            CoordI: req.body.CoordI,
-            CoordF: req.body.CoordF,
-            IdUtente: req.body.idUtente
-            },
-        headers: { "Content-Type": "application/json" }
-    };
-
-    client.post("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/PrenotaS", args, function (data, response) {
-        // data contiene le informazioni recuperate dal server REST
-        // response contiene le informazioni riguardanti il protocollo HTTP
-
-        if (data.n == 1)
-            res.send({message: 'E\' stata inserita una nuova informazione'});
-        else
-            res.send({message: 'Problemi nell\'inserimento'});
-    });
-});
-
-
-
-
-
-app.post('/partecipaS', function (req, res) {
-    var args = {
-        data: {
-            IdRichiesta: req.body.idRichiesta,
-            IdUtente: req.body.idUtente
-            },
-        headers: { "Content-Type": "application/json" }
-    };
-    client.post("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/PartecipaS", args, function (data, response) {
-        // data contiene le informazioni recuperate dal server REST
-        // response contiene le informazioni riguardanti il protocollo HTTP
-        if (data.n == 1)
-            res.send({message: 'E\' stata inserita una nuova informazione'});
-        else
-            res.send({message: 'Problemi nell\'inserimento'});
-    });
-});
-
-
-
-
-
-//GET REQUESTS
-
-app.get('/visuMezzi', function (req, res) {
+//VISUALIZZARE MONOPATTINI
+app.get('/VisualizzaMonop', function (req, res) {
     var args = {};
-    client.get("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/GetMezzi", args, function (data, response) {
-        res.send({Mezzi: data});
-    });
-});
-
-app.get('/visuOff', function (req, res) {
-    var args = {};
-    client.get("https://3000-e39bb563-82a9-49fa-b482-4079d331ce25.ws-eu0.gitpod.io/GetOfferte", args, function (data, response) {
-        res.send({offerte: data});
+    client.get("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/VisualizzaMonop", args, function (data, response) {
+        console.log(data);
+        res.send({result: data});
     });
 });
 
 
-
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(3001, function () {
+  console.log('Example app listening on port 3001!');
 });
