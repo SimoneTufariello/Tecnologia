@@ -1,0 +1,72 @@
+doctype html
+html(lang='en')
+  head
+    title Mono Office
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js')
+  body
+    .container
+      .page-header
+        h1 Mono Office
+
+      h3 Monopattini in uso:
+      if(monop != undefined)
+        table.table.table-striped
+          thead
+            th(align='left') QRCode
+            th(align='left') Latitudine
+            th(align='left') Longitudine
+            th(align='left') Data prelievo
+          tbody
+            each val in monop
+              tr
+                td= val.QRCode
+                td= val.Lat
+                td= val.Long
+                td= val.DataInizio
+
+      br
+      h3 Segnalazioni:
+      if(guasti != undefined)
+        table.table.table-striped
+          thead
+            th(align='left') QRCode
+            th(align='left') Codice guasto
+            th(align='left') Descrizione
+          tbody
+            each val in guasti
+              tr
+                td= val.QRCode
+                td= val.CodiceGuasto
+                td= val.Descrizione
+      br
+      h3 Risoluzione Guasti:
+      form(method='POST', action='/risoluzioneGuasti')
+        .form-group
+          label.control-label.col-sm-2(for='QRCode') QRCode:
+          .col-sm-10
+            input#pwd.form-control(type='text', placeholder='Inserisci il QRCode', name='QRCode')
+        br
+        br
+        .form-group
+          label.control-label.col-sm-2(for='CodGuasto') Codice Guasto:
+          .col-sm-10
+            input#pwd.form-control(type='text', placeholder='Inserisci il Codice del guasto', name='CodGuasto')
+        br
+        br
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            button.btn.btn-primary(type='submit') Invia
+            br
+            br
+
+        if(stat == "OK")
+          p(style='color:green;')= mexDelete
+          p(style='color:green;')= mexUpdate
+        else
+          p(style='color:red;')= mexDelete
+          p(style='color:red;')= mexUpdate
+
