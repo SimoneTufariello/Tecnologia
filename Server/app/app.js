@@ -10,6 +10,7 @@ const cors = require('cors');
 
 var cookieParser = require('cookie-parser');
 
+//NON VA COMUNQUE...
 app.all('*', function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");
    res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -85,11 +86,76 @@ app.post('/login', function(req, res) {
 
 
 //VISUALIZZARE MONOPATTINI
-app.get('/VisualizzaMonop', function (req, res) {
+app.post('/VisualizzaMonop', function (req, res) {
     var args = {};
-    client.get("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/VisualizzaMonop", args, function (data, response) {
+    client.post("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/VisualizzaMonop", args, function (data, response) {
         console.log(data);
         res.send({result: data});
+    });
+});
+
+//PRENOTA MONOPATTINO
+app.post('/PrendiMonop', function (req, res) {
+    var args = {
+        data: {
+            DataInizio: new Date(),
+            Lat: req.body.Lat,
+            Long: req.body.Long,
+            IdUtente: parseInt(req.body.IdUtente),
+            QRCode: req.body.QRCode
+            },
+        headers: { "Content-Type": "application/json" }
+    };
+    client.post("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/PrendiMonop", args, function (data, response) {
+        console.log(data);
+        if(data.n == 1)
+            res.send({mex: "OK"});
+        else
+            res.send({result: "KO"});
+    });
+});
+
+//LASCIA MONOPATTINO
+app.post('/LasciaMonop', function (req, res) {
+    var args = {
+        data: {
+            DataFine: new Date(),
+            Lat: req.body.Lat,
+            Long: req.body.Long,
+            IdUtente: parseInt(req.body.IdUtente),
+            QRCode: req.body.QRCode
+            },
+        headers: { "Content-Type": "application/json" }
+    };
+    client.post("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/LasciaMonop", args, function (data, response) {
+        console.log(data);
+        if(data.n == 1)
+            res.send({mex: "OK"});
+        else
+            res.send({result: "KO"});
+    });
+});
+
+//SEGNALA GUASTO
+app.post('/GuastoMonop', function (req, res) {
+    var args = {
+        data: {
+            DataFine: new Date(),
+            Lat: req.body.Lat,
+            Long: req.body.Long,
+            IdUtente: parseInt(req.body.IdUtente),
+            QRCode: req.body.QRCode,
+            Descrizione: req.body.Descrizione,
+            CodGuasto: parseInt(req.body.CodGuasto)
+            },
+        headers: { "Content-Type": "application/json" }
+    };
+    client.post("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/GuastoMonop", args, function (data, response) {
+        console.log(data);
+        if(data == "OK")
+            res.send(data);
+        else
+            res.send({data});
     });
 });
 

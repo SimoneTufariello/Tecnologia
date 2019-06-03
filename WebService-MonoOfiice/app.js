@@ -99,7 +99,7 @@ app.post('/risoluzioneGuasti', function (req, res) {
 //--------------------------------------------------------------------------------------------------- MONO RENT --------------------------------------------------------
 
 //VISUALIZZARE MONOPATTINI
-app.get('/VisualizzaMonop', function (req, res) {
+app.post('/VisualizzaMonop', function (req, res) {
 
     MongoClient.connect('mongodb+srv://admin:WmfgqPRXyc5vVlLQ@simo-2g6jy.mongodb.net/admin', function(err, db) {
       if (err) {
@@ -116,6 +116,66 @@ app.get('/VisualizzaMonop', function (req, res) {
     });
 
 });
+
+//PRENOTA MONOPATTINO
+app.post('/PrendiMonop', function (req, res) {
+
+    var monopModificare = { QRCode: req.body.QRCode};
+    var updateMonop = { $set: { DataInizio: req.body.DataInizio, Lat: req.body.Lat, Long: req.body.Long, Stato: true, IdUtente: parseInt(req.body.IdUtente) } };
+
+    var dbo = db.db("Tecnologie");
+    dbo.collection("Monopattino").updateOne(monopModificare, updateMonop, function(err, result) {
+      if (err) throw err;
+
+    res.send(result.result.n);
+    db.close();
+
+
+    });//monop
+});
+
+//LASCIA MONOPATTINO
+app.post('/LasciaMonop', function (req, res) {
+
+    var monopModificare = { QRCode: req.body.QRCode};
+    var updateMonop = { $set: { DataFine: req.body.DataFine, Lat: req.body.Lat, Long: req.body.Long, Stato: false, IdUtente: parseInt(req.body.IdUtente) } };
+
+    var dbo = db.db("Tecnologie");
+    dbo.collection("Monopattino").updateOne(monopModificare, updateMonop, function(err, result) {
+      if (err) throw err;
+
+      res.send(result.result.n);
+      db.close();
+
+    });
+});
+
+//SEGNALA GUASTO
+app.post('/GuastoMonop', function (req, res) {
+
+    var monopModificare = { QRCode: req.body.QRCode};
+    var updateMonop = { $set: { DataFine: req.body.DataFine, Lat: req.body.Lat, Long: req.body.Long, Stato: false, Guasto: true, IdUtente: parseInt(req.body.IdUtente) } };
+
+    var dbo = db.db("Tecnologie");
+    dbo.collection("Monopattino").updateOne(monopModificare, updateMonop, function(err, result) {
+      if (err) throw err;
+
+      var AddGuasto = { QRCode: req.body.QRCode, Descrizione: req.body.Descrizione, CodiceGuasto: parseInt(req.body.CodGuasto)};
+      dbo.collection("Guasto").insertOne(AddGuasto, function(err, result2) {
+        if (err) throw err;
+
+      if (result.result.n == 1 && result2.result.n == 1)
+             res.send({mex: "OK"});
+           else
+             res.send({mex: "KO"});
+      db.close();
+
+      });//guasto
+    });//monop
+});
+
+
+
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
