@@ -10,7 +10,12 @@ const cors = require('cors');
 
 var cookieParser = require('cookie-parser');
 
-app.use(cors());
+app.all('*', function(req, res, next) {
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+   next();
+});
+
 
 var MongoClient = require('mongodb').MongoClient;
 var Client = require('node-rest-client').Client;
@@ -25,11 +30,7 @@ var conn = mysql.createConnection({
     user: "UPHEOeV4ml"
     });
 
-app.use(function(req, res, next){
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+
 
 
 app.get('/', function (req, res) {
@@ -70,10 +71,10 @@ app.post('/login', function(req, res) {
 
     conn.connect(function(err) {
         if (err) throw err;
-        conn.query('SELECT * FROM User WHERE Username = "' + username + '" AND Password = "' + pass + '"', function(err, result, fields) {
+        conn.query('SELECT ID FROM User WHERE Username = "' + username + '" AND Password = "' + pass + '"', function(err, result, fields) {
             if (err) throw err;
             if(result.length != 0){
-                res.send(true);
+                res.send(result);
                 console.log("Login corretto");
             }else{
                 res.send(false);
