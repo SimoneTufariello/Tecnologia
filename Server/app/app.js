@@ -57,7 +57,7 @@ app.post('/register', function(req, res) {
         conn.query('INSERT INTO User(Nome, Cognome, Username, Password, Email, Data) VALUES("' + nome + '","' + cognome + '","' + username + '","' + pass + '","' + email + '","' + data + '")', function(err2, result, fields) {
             if (err2) throw err2;
             console.log(result);
-            res.send(result);
+            res.send(true);
 
         });
     });
@@ -159,7 +159,26 @@ app.post('/GuastoMonop', function (req, res) {
     });
 });
 
-
+//SCOOTERING
+app.post('/Scootering', function (req, res) {
+    var args = {
+        data: {
+            Lat: req.body.Lat,
+            Long: req.body.Long,
+            IdUtente: parseInt(req.body.IdUtente),
+            QRCode: req.body.QRCode,
+            Destinazione: req.body.destinazione
+            },
+        headers: { "Content-Type": "application/json" }
+    };
+    client.post("https://3000-c58ed4f4-a087-4683-bc1d-2e35d72adad7.ws-eu0.gitpod.io/Scootering", args, function (data, response) {
+        console.log(data);
+        if(data == "OK")
+            res.send(data);
+        else
+            res.send({data});
+    });
+});
 app.listen(3001, function () {
   console.log('Example app listening on port 3001!');
 });
